@@ -1,5 +1,7 @@
 # OpenNet: Community Platform for Volleyball Meetup Scheduling
-
+# Jira Link
+https://camdenkseaver.atlassian.net/jira/software/projects/OP/boards/34
+---
 ## Team Members
 - Camden Seaver  
 - Aaron Sallade
