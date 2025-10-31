@@ -1,5 +1,16 @@
 import React, { useState } from 'react';
-import { KeyboardAvoidingView, ScrollView, View } from 'react-native';
+import { 
+    KeyboardAvoidingView, 
+    ScrollView, 
+    View,
+    StyleSheet,
+    Platform,
+    Text,
+    TouchableOpacity,
+    ActivityIndicator
+} from 'react-native';
+import { MaterialIcons } from '@expo/vector-icons';
+import DoneTextInput from '../components/DoneTextInput';
 const AuthScreen = () => {
     const [isLogin,setIsLogin] = useState(true);
     const [loading,setLoading] = useState(false);
@@ -11,14 +22,23 @@ const AuthScreen = () => {
         confirmPassword: ''
     });
 
+    const handleInputChange = (field, value) => {
+        setFormData(prev => ({
+            ...prev,
+            [field]: value
+        }));
+    };
 
+    const handleEmailAuth = () => {
+        alert('Got to auth');
+    };
 
 
 
 
     return(
         <KeyboardAvoidingView
-            style={StyleSheet.container}
+            style={styles.container}
             behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         >
             <ScrollView currentContainerStyle = {styles.scrollContainer}>
@@ -56,14 +76,7 @@ const AuthScreen = () => {
 
             {/*TODO: get ios and google login setup*/}
 
-
-            <View style={styles.divider}>
-                <View style={styles.dividerLine} />
-                <Text style={styles.dividerText}>or</Text>
-                <View style={styles.dividerLine} />
-            </View>
-
-            <View style = {styles.inputContainter}>
+            <View style = {styles.inputContainer}>
                 {!isLogin && (
                     <DoneTextInput
                         style = {styles.input}
@@ -71,7 +84,7 @@ const AuthScreen = () => {
                         value={formData.name}
                         onChangeText = {(value) => handleInputChange('name',value)}
                         autoCapitalize= "words"
-                        editable = {!isLoading}
+                        editable = {!loading}
                         maxLength = {30}
 
                     />
@@ -162,7 +175,7 @@ const styles = StyleSheet.create({
     },
     toggleText: {
         fontSize: 16,
-        fontWeight: '600',
+        fontWeight:'600',
         color: '#6B7280',
     },
     toggleButtonActive: {
@@ -170,6 +183,70 @@ const styles = StyleSheet.create({
     },
     toggleTextActive: {
         color: '#111827',
+    },
+    appName: {
+        fontSize: 36,
+        fontWeight: 'bold',
+        color:'#FFFFFF',
+        marginBottom: 8,
+    },
+    logoContainer: {
+        width:80,
+        height: 80,
+        backgroundColor: '#FFFFFF',
+        borderRadius: 20,
+        alignItems:'center',
+        justifyContent: 'center',
+        marginBottom: 16,
+    },
+    formContainer: {
+        backgroundColor: '#FFFFFF',
+        borderRadius:24,
+        padding: 32,
+    },
+    inputContainer: {
+        gap: 16,
+    },
+    eyeIcon: {
+        position: 'absolute',
+        right: 16,
+        top: 16,
+        padding: 4,
+    },
+    passwordInput: {
+        borderWidth: 1,
+        borderColor: '#E5E7EB',
+        borderRadius: 16,
+        paddingVertical:16,
+        paddingHorizontal:24,
+        paddingRight: 56,
+        fontSize:16,
+    },
+    input: {
+        borderWidth: 1,
+        borderColor: '#E5E7EB',
+        borderRadius:16,
+        paddingVertical: 16,
+        paddingHorizontal: 24,
+        fontSize: 16,
+    },
+    passwordContainer: {
+        position:'relative',
+    },
+    submitButton: {
+        backgroundColor: '#FB923C',
+        paddingVertical: 16,
+        borderRadius: 16,
+        alignItems: 'center',
+        marginTop: 8,
+    },
+    submitButtonDisabled: {
+        opacity: 0.7,
+    },
+    submitButtonText: {
+        color: '#FFFFFF',
+        fontSize: 16,
+        fontWeight: '600',
     },
 });
 
