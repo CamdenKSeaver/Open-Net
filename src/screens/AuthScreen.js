@@ -41,7 +41,7 @@ const AuthScreen = () => {
             style={styles.container}
             behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         >
-            <ScrollView currentContainerStyle = {styles.scrollContainer}>
+            <ScrollView contentContainerStyle  = {styles.scrollContainer}>
             {/*Title Section*/}
             <View style = {styles.header}>
                 <View style ={styles.logoContainer}>
@@ -49,30 +49,33 @@ const AuthScreen = () => {
                     <MaterialIcons name="sports-volleyball" size={40} color="#FB923C" />
                 </View>
                 <Text style={styles.appName}>OpenNet</Text>
+                <Text style={styles.tagline}>Find your perfect volleyball community</Text>
             </View>
 
             {/*Forms*/}
 
             <View style = {styles.formContainer}>
-                <TouchableOpacity
-                    style={[styles.toggleButton, isLogin && styles.toggleButtonActive]}
-                    onPress={() => setIsLogin(true)}
-                >
-                    <Text style={[styles.toggleText, isLogin && styles.toggleTextActive]}>
-                        Login
-                    </Text>
-                    
-                </TouchableOpacity>
-                <TouchableOpacity
-                    style={[styles.toggleButton, !isLogin && styles.toggleButtonActive]}
-                    onPress={() => setIsLogin(false)}
-                >
-                    <Text style={[styles.toggleText, !isLogin && styles.toggleTextActive]}>
-                        Sign Up
-                    </Text>
-                    
-                </TouchableOpacity>
-            </View>
+                <View style ={styles.toggleContainer}>
+                    <TouchableOpacity
+                        style={[styles.toggleButton, isLogin && styles.toggleButtonActive]}
+                        onPress={() => setIsLogin(true)}
+                    >
+                        <Text style={[styles.toggleText, isLogin && styles.toggleTextActive]}>
+                            Login
+                        </Text>
+                        
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        style={[styles.toggleButton, !isLogin && styles.toggleButtonActive]}
+                        onPress={() => setIsLogin(false)}
+                    >
+                        <Text style={[styles.toggleText, !isLogin && styles.toggleTextActive]}>
+                            Sign Up
+                        </Text>
+                        
+                    </TouchableOpacity>
+                </View>
+            
 
             {/*TODO: get ios and google login setup*/}
 
@@ -86,6 +89,7 @@ const AuthScreen = () => {
                         autoCapitalize= "words"
                         editable = {!loading}
                         maxLength = {30}
+                        placeholderTextColor="#6B7280"
 
                     />
                 )}
@@ -98,6 +102,7 @@ const AuthScreen = () => {
                     autoCapitalize="none"
                     editable={!loading}
                     maxLength={100}
+                    placeholderTextColor="#6B7280"
                 />
                 <View style={styles.passwordContainer}>
                 <DoneTextInput
@@ -108,6 +113,7 @@ const AuthScreen = () => {
                     secureTextEntry={!showPassword}
                     editable={!loading}
                     maxLength={50}
+                    placeholderTextColor="#6B7280"
                 />
                 <TouchableOpacity
                     style={styles.eyeIcon}
@@ -130,6 +136,7 @@ const AuthScreen = () => {
                     secureTextEntry={!showPassword}
                     editable={!loading}
                     maxLength={50}
+                    placeholderTextColor="#6B7280"
                 />
                 )}
 
@@ -150,7 +157,7 @@ const AuthScreen = () => {
                 
             </View>
 
-
+            </View>
             </ScrollView>
 
         </KeyboardAvoidingView>
@@ -169,7 +176,7 @@ const styles = StyleSheet.create({
     },
     toggleButton:{
         flex:1,
-        paddingVeritcal:12,
+        paddingVertical:12,
         alignItems: 'center',
         borderRadius: 12
     },
@@ -247,6 +254,21 @@ const styles = StyleSheet.create({
         color: '#FFFFFF',
         fontSize: 16,
         fontWeight: '600',
+    },
+    header: {
+        alignItems: 'center',
+        marginBottom: 40,
+    },
+    tagline: {
+        fontSize: 18,
+        color: 'rgba(255, 255, 255, 0.8)',
+    },
+    toggleContainer: {
+        flexDirection: 'row',
+        backgroundColor: '#F3F4F6',
+        borderRadius: 16,
+        padding: 4,
+        marginBottom: 24,
     },
 });
 
