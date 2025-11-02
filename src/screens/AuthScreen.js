@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Alert } from 'react-native';
 import { 
     KeyboardAvoidingView, 
     ScrollView, 
@@ -11,6 +12,7 @@ import {
 } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import DoneTextInput from '../components/DoneTextInput';
+import { signInWithEmail, signUpWithEmail, signInWithGoogle } from '../services/authService';
 const AuthScreen = () => {
     const [isLogin,setIsLogin] = useState(true);
     const [loading,setLoading] = useState(false);
@@ -29,8 +31,26 @@ const AuthScreen = () => {
         }));
     };
 
-    const handleEmailAuth = () => {
-        alert('Got to auth');
+    const handleEmailAuth = async () => {
+       // alert('Got to auth');
+        setLoading(true);
+        try{
+            let userResult;
+            if(isLogin){
+                userResult = await signInWithEmail(formData.email, formData.password);
+            }
+            else {
+                userResult = await signUpWithEmail(formData.email, formData.password, formData.name);
+            }
+           // Alert.alert('signed in');
+        }
+        catch(error){
+            Alert.alert('Authentication Error', error.message);
+        }
+        finally {
+            setLoading(false);
+        }
+
     };
 
 
