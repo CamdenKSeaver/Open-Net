@@ -163,7 +163,7 @@ const ProfileSetupScreen = ({onProfileComplete}) => {
                     value={age}
                     onChangeText= {setAge}
                     placeholder="Enter your age"
-                    keyboardType="number-pad"
+                    keyboardType="decimal-pad"
                     maxLength={3}
                     editable={!loading}
                 />
