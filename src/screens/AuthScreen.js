@@ -12,7 +12,7 @@ import {
 } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import DoneTextInput from '../components/DoneTextInput';
-import { signInWithEmail, signUpWithEmail, signInWithGoogle } from '../services/authService';
+import { signInWithEmail, signUpWithEmail } from '../services/authService';
 const AuthScreen = () => {
     const [isLogin,setIsLogin] = useState(true);
     const [loading,setLoading] = useState(false);

@@ -7,65 +7,23 @@ import ProfileSetupScreen from './src/screens/ProfileSetupScreen';
 import { supabase } from './supabaseConfig';
 import { ActivityIndicator, View } from 'react-native';
 import { getUserProfile } from './src/services/profileService';
+import CreateEventScreen from './src/screens/CreateEventScreen';
+import EventDetailScreen from './src/screens/EventDetailScreen';
+import WaitlistManagementScreen from './src/screens/WaitlistManagementScreen';
+import { AuthProvider } from './src/context/AuthContext';
+import { useAuth } from './src/context/AuthContext';
 const Stack = createStackNavigator();
  
 
 const AppNavigator = () => {
 
-    const [user, setUser] = useState(null);
+    const { user, loading: authLoading, refreshSession } = useAuth();
     const [hasProfile, setHasProfile] = useState(false);
-    const [authLoading, setAuthLoading] = useState(true);
     const [profileLoading, setProfileLoading] = useState(false);
 
 
     useEffect(() => {
-        checkUser();
-
-        const { data: authListener } = supabase.auth.onAuthStateChange(
-            async (event, session) => {
-                console.log('Auth event:', event);
-                
-                if (session?.user) {
-                    const normalizedUser = {
-                        ...session.user,
-                        uid: session.user.id,
-                        displayName: session.user.user_metadata?.name,
-                    };
-                    setUser(normalizedUser);
-                } else {
-                    setUser(null);
-                    setHasProfile(false);
-                }
-                
-                setAuthLoading(false);
-            }
-        );
-
-        return () => {
-            authListener?.subscription?.unsubscribe();
-        };
-    }, []);
-
-    const checkUser = async () => {
-        try {
-            const { data: { session } } = await supabase.auth.getSession();
-            if (session?.user) {
-                const normalizedUser = {
-                    ...session.user,
-                    uid: session.user.id,
-                    displayName: session.user.user_metadata?.name,
-                };
-                setUser(normalizedUser);
-            }
-        } 
-        catch (error) {
-            throw error;
-        } 
-        finally {
-            setAuthLoading(false);
-        }
-    };
-    useEffect(() => {
+       
         const checkProfile = async () => {
             if (user && !authLoading) {
                 setProfileLoading(true);
@@ -85,17 +43,33 @@ const AppNavigator = () => {
         checkProfile();
     },[user,authLoading]);
 
-    const handleProfileComplete = () => {
-        setHasProfile(true);
+    const handleProfileComplete = async () => {
+        setProfileLoading(true);
+        
+        try {
+            const userId = user.id || user.uid;
+            
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            const profile = await getUserProfile(userId);
+            const isComplete = profile?.is_profile_complete || false;
+            
+            setHasProfile(isComplete);
+            
+            
+        } catch (error) {
+            console.error('Profile check error:', error.message);
+        } finally {
+            setProfileLoading(false);
+        }
     };
     if (authLoading || profileLoading) {
         return (
-            <View style={{ lex: 1,justifyContent: 'center', alignItems:'center',backgroundColor:'#F9FAFB' }}>
-                <ActivityIndicator size="large"color = "#FB923C"/>
+            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+            <ActivityIndicator size="large" color="#FB923C" />
             </View>
         );
     }
-
     //TODO ADD THE TABS
     //Grogan work on the map and aaron work on the profile screen
     return(
@@ -110,14 +84,35 @@ const AppNavigator = () => {
                         )}
                     </Stack.Screen>  
                     ) :(
+                    <>
                         <Stack.Screen name="Main" component={MainScreen} />
-                    )
-                }
+                        <Stack.Screen 
+                            name="CreateEvent" 
+                            component={CreateEventScreen}
+                            options={{
+                                headerShown: false,
+                                presentation: 'modal',
+                            }}
+                        />
+                        <Stack.Screen 
+                            name="EventDetail" 
+                            component={EventDetailScreen}
+                            options={{
+                                headerShown: false,
+                            }}
+                        />
+                        <Stack.Screen 
+                            name="WaitlistManagement" 
+                            component={WaitlistManagementScreen}
+                            options={{ headerShown: false }}
+                        />
+                    </>
+                    )}
             </Stack.Navigator>
         </NavigationContainer>
     );
 }
 
 export default function App() {
-  return <AppNavigator />;
+  return <AuthProvider><AppNavigator /></AuthProvider>;
 }
