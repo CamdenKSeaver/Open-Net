@@ -1,69 +1,87 @@
-import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
-import { useAuth } from '../context/AuthContext';
-import { supabase } from '../../supabaseConfig';
+import MapScreen from './MapScreen';
+import ProfileScreen from './ProfileScreen';
+import MyEventsScreen from './MyEventsScreen';
+import SearchScreen from './SearchScreen';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { MaterialIcons } from '@expo/vector-icons';
+import {useSafeAreaInsets } from 'react-native-safe-area-context';
+const Tab = createBottomTabNavigator();
 
 const MainScreen = () => {
-  const { user } = useAuth();
+    const insets = useSafeAreaInsets();
+        return (
+            <Tab.Navigator
+                  screenOptions={({ route }) => ({tabBarIcon: ({ focused, color, size }) => {let iconName;
 
-  const handleSignOut = async () => {
-    try {
-      const { error } = await supabase.auth.signOut();
-      if (error) throw error;
-      Alert.alert('Signed out', 'You have been signed out successfully.');
-    } catch (error) {
-      Alert.alert('Error', error.message);
-    }
-  };
+                  switch (route.name) {
+                        case 'Map':
+                          iconName = 'map';
+                          break;
+                        case 'MyEvents':
+                            iconName = 'event';
+                            break;
+                        case 'Search':
+                            iconName = 'search';
+                            break;
+                        case 'Profile':
+                            iconName = 'person';
+                            break;
+                        default:
+                            iconName = 'circle';
+                      }
 
-  return (
-    <View style={styles.container}>
-      {user ? (
-        <>
-          <Text style={styles.title}>Welcome to OpenNet!</Text>
-          <Text style={styles.email}>Signed in as: {user.email}</Text>
-
-          <TouchableOpacity style={styles.signOutButton} onPress={handleSignOut}>
-            <Text style={styles.signOutText}>Sign Out</Text>
-          </TouchableOpacity>
-        </>
-      ) : (
-        <Text style={styles.email}>No user signed in.</Text>
-      )}
-    </View>
+          return <MaterialIcons name={iconName} size={size} color={color} />;
+        },
+        tabBarActiveTintColor: '#FB923C',
+        tabBarInactiveTintColor: '#9CA3AF',
+        tabBarStyle: {
+          backgroundColor: '#FFFFFF',
+          borderTopWidth: 1,
+          borderTopColor: '#E5E7EB',
+          paddingBottom: 5,
+          paddingTop: 5,
+          height: 60 + insets.bottom,
+        },
+        tabBarLabelStyle: {
+          fontSize: 12,
+          fontWeight: '500',
+        },
+        headerShown: false,
+      })}
+    >
+      <Tab.Screen 
+          name="Map" 
+          component={MapScreen}
+          options={{
+              tabBarLabel: 'Map',
+          }}
+      />
+      <Tab.Screen 
+          name="MyEvents" 
+          component={MyEventsScreen}
+          options={{
+              tabBarLabel: 'My Events',
+          }}
+      />
+      <Tab.Screen 
+          name="Search" 
+          component={SearchScreen}
+          options={{
+              tabBarLabel: 'Search',
+          }}
+      />
+      <Tab.Screen 
+          name="Profile" 
+          component={ProfileScreen}
+          options={{
+              tabBarLabel: 'Profile',
+          }}
+      />
+    </Tab.Navigator>
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#FFF',
-    padding: 20,
-  },
-  title: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    marginBottom: 10,
-    color: '#111827',
-  },
-  email: {
-    fontSize: 16,
-    color: '#6B7280',
-    marginBottom: 30,
-  },
-  signOutButton: {
-    backgroundColor: '#FB923C',
-    paddingVertical: 14,
-    paddingHorizontal: 30,
-    borderRadius: 12,
-  },
-  signOutText: {
-    color: '#FFF',
-    fontWeight: '600',
-    fontSize: 16,
-  },
-});
+
+
 
 export default MainScreen;

@@ -1,10 +1,10 @@
 
 import { View, Text, StyleSheet } from 'react-native';
 
-const MapScreen = () => {
+const MyEventsScreen = () => {
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Map Screen</Text>
+      <Text style={styles.text}>My Events Screen</Text>
     </View>
   );
 };
@@ -22,4 +22,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default MapScreen;
+export default MyEventsScreen;

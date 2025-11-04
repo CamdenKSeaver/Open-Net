@@ -4,7 +4,6 @@ import MainScreen from './src/screens/MainScreen';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import ProfileSetupScreen from './src/screens/ProfileSetupScreen';
-import { supabase } from './supabaseConfig';
 import { ActivityIndicator, View } from 'react-native';
 import { getUserProfile } from './src/services/profileService';
 import CreateEventScreen from './src/screens/CreateEventScreen';
