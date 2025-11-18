@@ -1,0 +1,56 @@
+Location in form field doesn't actually connect right now but we want to have a default coordinates for them
+CREATE TABLE profiles (
+  id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
+  email TEXT UNIQUE NOT NULL,
+  name TEXT NOT NULL,
+  age INTEGER,
+  phone_number TEXT,
+  bio TEXT,
+  profile_image_url TEXT,
+  primary_position TEXT NOT NULL,
+  secondary_position TEXT,
+  experience_level TEXT DEFAULT 'beginner',
+  location TEXT NOT NULL,
+  location_lat DOUBLE PRECISION,
+  location_lng DOUBLE PRECISION,
+  preferred_courts TEXT[] DEFAULT '{}',
+  is_profile_complete BOOLEAN DEFAULT false,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+For future we need to make the location stuff easier to read so i added a name and address spot
+CREATE TABLE events (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  host_id UUID NOT NULL REFERENCES profiles(id) ON DELETE CASCADE,
+  host_name TEXT NOT NULL,
+  title TEXT NOT NULL,
+  description TEXT,
+  court_type TEXT NOT NULL,
+  max_players INTEGER NOT NULL,
+  is_private BOOLEAN DEFAULT false,
+  location_lat DOUBLE PRECISION NOT NULL,
+  location_lng DOUBLE PRECISION NOT NULL,
+  location_address TEXT,
+  location_name TEXT,
+  start_time TIMESTAMPTZ NOT NULL,
+  end_time TIMESTAMPTZ NOT NULL,
+  status TEXT DEFAULT 'active',
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+CREATE TABLE teams (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  event_id UUID NOT NULL REFERENCES events(id) ON DELETE CASCADE,
+  name TEXT NOT NULL,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+CREATE TABLE event_players (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  event_id UUID NOT NULL REFERENCES events(id) ON DELETE CASCADE,
+  user_id UUID NOT NULL REFERENCES profiles(id) ON DELETE CASCADE,
+  team_id UUID REFERENCES teams(id) ON DELETE SET NULL,
+  status TEXT DEFAULT 'waitlist',
+  position TEXT,
+  joined_at TIMESTAMPTZ DEFAULT NOW(),
+  UNIQUE(event_id, user_id)
+);
