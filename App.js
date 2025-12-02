@@ -11,6 +11,8 @@ import EventDetailScreen from './src/screens/EventDetailScreen';
 import WaitlistManagementScreen from './src/screens/WaitlistManagementScreen';
 import { AuthProvider } from './src/context/AuthContext';
 import { useAuth } from './src/context/AuthContext';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { supabase } from './supabaseConfig';
 const Stack = createStackNavigator();
  
 
@@ -111,7 +113,8 @@ const AppNavigator = () => {
         </NavigationContainer>
     );
 }
-
+AsyncStorage.clear();
+supabase.auth.signOut();
 export default function App() {
   return <AuthProvider><AppNavigator /></AuthProvider>;
 }

@@ -25,7 +25,7 @@ import { createEvent } from '../services/eventService';
 const { width, height } = Dimensions.get('window');
 
 const COURT_TYPES = [
-  { id:'beach', name: 'Beach', icon:'beach-access', color: '#FFB800' },
+  { id:'beach', name: 'Beach', icon:'beach-access',color: '#FFB800' },
   { id:'indoor', name: 'Indoor', icon:'home', color: '#FB923C' },
   { id: 'grass', name:'Grass', icon: 'grass', color: '#10B981' }
 ];
