@@ -113,8 +113,7 @@ const AppNavigator = () => {
         </NavigationContainer>
     );
 }
-AsyncStorage.clear();
-supabase.auth.signOut();
+
 export default function App() {
   return <AuthProvider><AppNavigator /></AuthProvider>;
 }

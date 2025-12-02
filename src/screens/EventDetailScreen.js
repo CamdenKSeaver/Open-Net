@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { useFocusEffect } from '@react-navigation/native'
 import {
   View, Text, ScrollView, TouchableOpacity, StyleSheet,
   ActivityIndicator, Alert, RefreshControl, Image
@@ -51,9 +52,11 @@ const EventDetailScreen = ({ route, navigation }) => {
 
 
 
-  useEffect(() => {
-    loadEventDetails()
-  }, [eventId])
+  useFocusEffect(
+    React.useCallback(() => {
+      loadEventDetails()
+    }, [eventId])
+  )
 
 
   const loadEventDetails = async () => {
@@ -308,10 +311,10 @@ const EventDetailScreen = ({ route, navigation }) => {
 
 
 
-  const isHost      = event.host_id === user?.id
-  const isApproved  = event.approved_players?.includes(user?.id)
+  const isHost= event.host_id === user?.id
+  const isApproved = event.approved_players?.includes(user?.id)
   const isOnWaitlist = event.waitlist?.includes(user?.id)
-  const isFull      = event.current_players >= event.max_players
+  const isFull = event.current_players >= event.max_players
 
 
 
@@ -627,9 +630,6 @@ const EventDetailScreen = ({ route, navigation }) => {
 }
 
 
-
-
-// styles (kept mostly the same)
 const styles = StyleSheet.create({
 
   container: {
