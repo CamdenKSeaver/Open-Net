@@ -21,7 +21,24 @@ router.get('/:userId', authenticateToken, async (req, res) => {
     res.status(500).json({ success: false, error: error.message });
   }
 });
+router.get('/:userId/complete', authenticateToken, async (req, res) => {
+  try {
+    const { userId } = req.params;
 
+    const { data } = await supabase
+      .from('profiles')
+      .select('is_profile_complete')
+      .eq('id', userId)
+      .single();
+
+    res.json({ 
+      success: true, 
+      data: { isComplete: data?.is_profile_complete || false } 
+    });
+  } catch (error) {
+    res.json({ success: true, data: { isComplete: false } });
+  }
+});
 // Create/Update user profile
 router.post('/', authenticateToken, async (req, res) => {
   try {
@@ -68,24 +85,48 @@ router.post('/', authenticateToken, async (req, res) => {
   }
 });
 
-// Check if profile is complete
-router.get('/:userId/complete', authenticateToken, async (req, res) => {
+
+router.put('/:userId', authenticateToken, async (req,res) => {
+
   try {
     const { userId } = req.params;
+    const updates = req.body;
 
-    const { data } = await supabase
+    if (req.user.id !== userId) {
+      return res.status(403).json({ 
+        success: false, 
+      });
+    }
+
+    const updateData = {
+      updated_at: new Date().toISOString()
+    };
+    if (updates.name !== undefined) updateData.name = updates.name.trim();
+    if (updates.age !== undefined) updateData.age = parseInt(updates.age);
+    if (updates.phoneNumber !== undefined) updateData.phone_number = updates.phoneNumber.trim();
+    if (updates.bio !== undefined) updateData.bio = updates.bio.trim();
+    if (updates.primaryPosition !== undefined) updateData.primary_position = updates.primaryPosition;
+    if (updates.secondaryPosition !== undefined) updateData.secondary_position = updates.secondaryPosition || null;
+    if (updates.experienceLevel !== undefined) updateData.experience_level = updates.experienceLevel;
+    if (updates.location !== undefined) updateData.location = updates.location.trim();
+    if (updates.preferredCourts !== undefined) updateData.preferred_courts = updates.preferredCourts;
+
+    const { data, error } = await supabase
       .from('profiles')
-      .select('is_profile_complete')
+      .update(updateData)
       .eq('id', userId)
+      .select()
       .single();
 
-    res.json({ 
-      success: true, 
-      data: { isComplete: data?.is_profile_complete || false } 
-    });
-  } catch (error) {
-    res.json({ success: true, data: { isComplete: false } });
+
+
+    if (error) throw error;
+
+    res.json({ success: true, data });
+  } catch (error) {res.status(500).json({ success: false, error: error.message });
   }
 });
+
+
 
 module.exports = router;

@@ -19,8 +19,11 @@ export const AuthProvider = ({ children }) => {
             if (userData) {
                 setUser(JSON.parse(userData));
             }
+            else setUser(null);
+
         } catch (error) {
-            console.error('Error loading user:', error);
+            console.error('Error loading user:', error); 
+            setUser(null);
         } finally {
             setLoading(false);
         }

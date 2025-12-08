@@ -4,8 +4,9 @@ require('dotenv').config();
 
 const authRoutes = require('./routes/auth');
 
-const profileRoutes = require('./routes/profiles');
+
 const eventRoutes = require('./routes/events');
+const profilesRouter = require('./routes/profiles');
 
 const app = express();
 
@@ -15,7 +16,7 @@ app.use(express.json());
 
 
 app.use('/api/auth', authRoutes);
-app.use('/api/profiles', profileRoutes);
+app.use('/api/profiles', profilesRouter);
 app.use('/api/events', eventRoutes);
 app.get('/api/health', (req, res) => {
   res.json({ success: true, message: 'OpenNet Custom API is running' });

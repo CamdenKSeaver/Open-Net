@@ -3,7 +3,7 @@ import API_URL from '../config/api';
 import { getAuthToken } from './authService';
 
 const getHeaders = async () => {
-  const token = await getAuthToken();  // Gets from AsyncStorage
+  const token = await getAuthToken();
   return {
     'Content-Type': 'application/json',
     'Authorization': token ? `Bearer ${token}` : ''
@@ -67,5 +67,26 @@ export const isProfileComplete = async(userId) => {
     return result.data.isComplete;
   } catch (error) {
     return false;
+  }
+};
+
+
+
+export const updateUserProfile = async (userId, updates) => {
+  try {
+    const headers = await getHeaders();
+    const response = await fetch(`${API_URL}/profiles/${userId}`, {
+      method: 'PUT',
+      headers,
+      body: JSON.stringify(updates)
+    });
+
+
+    const result = await response.json();
+
+    if (!result.success) throw new Error(result.error);
+
+    return result.data;
+  } catch (error) {throw error;
   }
 };
