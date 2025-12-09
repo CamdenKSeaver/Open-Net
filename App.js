@@ -21,12 +21,13 @@ const AppNavigator = () => {
     const { user, loading: authLoading, refreshSession } = useAuth();
     const [hasProfile, setHasProfile] = useState(false);
     const [profileLoading, setProfileLoading] = useState(false);
-
+    const [checkingProfile, setCheckingProfile] = useState(false);
 
     useEffect(() => {
        
         const checkProfile = async () => {
             if (user && !authLoading) {
+                setCheckingProfile(true);
                 setProfileLoading(true);
                 try {
                     const userId = user.id || user.uid;
@@ -37,7 +38,12 @@ const AppNavigator = () => {
                     setHasProfile(false);
                 } finally {
                     setProfileLoading(false);
+                    setCheckingProfile(false);
                 }
+            }else if (!user && !authLoading) {
+                setHasProfile(false);
+                setProfileLoading(false);
+                setCheckingProfile(false);
             }
         };
 

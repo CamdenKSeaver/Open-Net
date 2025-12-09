@@ -123,7 +123,7 @@ router.put('/:userId', authenticateToken, async (req,res) => {
     if (error) throw error;
 
     res.json({ success: true, data });
-  } catch (error) {res.status(500).json({ success: false, error: error.message });
+  } catch (error) {res.status(500).json({success: false, error: error.message});
   }
 });
 

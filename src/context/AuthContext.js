@@ -16,10 +16,13 @@ export const AuthProvider = ({ children }) => {
     const checkUser = async () => {
         try {
             const userData = await AsyncStorage.getItem('userData');
-            if (userData) {
+            const authToken = await AsyncStorage.getItem('authToken');
+            if (userData && authToken) {
                 setUser(JSON.parse(userData));
             }
-            else setUser(null);
+            else {await AsyncStorage.removeItem('userData');
+                await AsyncStorage.removeItem('authToken');
+                setUser(null);}
 
         } catch (error) {
             console.error('Error loading user:', error); 
