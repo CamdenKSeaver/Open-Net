@@ -25,12 +25,12 @@ const VOLLEYBALL_POSITIONS = [
     'Libero',
     'Defensive Specialist'
 ];
-//TODO
-//Prolly get some icons, draw them in or art class or something
+
+
 const COURT_TYPES = [
-    { id: 'beach', label: 'Beach', icon: '' },
-    { id: 'indoor', label: 'Indoor', icon: '' },
-    { id: 'grass', label: 'Grass', icon: '' }
+    { id: 'beach', label: 'Beach', icon: 'beach-access', color: '#FFB800'},
+    { id: 'indoor', label: 'Indoor', icon: 'home', color: '#FB923C'},
+    { id: 'grass', label: 'Grass', icon: 'grass', color: '#10B981'}
 ];
 const ProfileSetupScreen = ({onProfileComplete}) => {
     const { user }  = useAuth();

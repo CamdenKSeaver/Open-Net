@@ -41,7 +41,7 @@ const AuthScreen = () => {
                 userResult = await signInWithEmail(formData.email, formData.password);
             } 
             else {
-                userResult = await signUpWithEmail(formData.email, formData.password, formData.name);
+                userResult = await signUpWithEmail(formData.email, formData.password);
             }
             
 
