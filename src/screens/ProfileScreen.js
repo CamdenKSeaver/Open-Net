@@ -14,7 +14,7 @@ import { useAuth } from '../context/AuthContext';
 import { signOut } from '../services/authService';
 import DoneTextInput from '../components/DoneTextInput';
 import { getUserProfile, updateUserProfile } from '../services/profileService';
-
+import * as Location from 'expo-location';
 const VOLLEYBALL_POSITIONS = [
   'Outside Hitter',
   'Middle Blocker',
@@ -44,7 +44,8 @@ const ProfileScreen = () => {
   const [editMode, setEditMode] = useState(false);
   const [showPositionModal, setShowPositionModal] = useState(false);
   const [positionType, setPositionType] = useState('');
-
+  const [detectedLocation, setDetectedLocation] = useState('detecting');
+  const [loadingLocation, setLoadingLocation] = useState(true);
   const [editedProfile, setEditedProfile] = useState({
     name: '',
     age:'',
@@ -60,6 +61,49 @@ const ProfileScreen = () => {
   useEffect(() => {
     loadProfile();
   }, [user]);
+
+
+  useEffect(() => {
+      getLocation();
+  }, []);
+
+  const getLocation = async () => {
+      setLoadingLocation(true);
+      try {
+          let { status } = await Location.requestForegroundPermissionsAsync();
+          
+          if (status !== 'granted') {
+              setDetectedLocation('None');
+              setLoadingLocation(false);
+              return;
+          }
+
+          let currentLocation = await Location.getCurrentPositionAsync({
+              accuracy: Location.Accuracy.Balanced,
+          });
+
+          let reverseGeocode = await Location.reverseGeocodeAsync({
+              latitude: currentLocation.coords.latitude,
+              longitude: currentLocation.coords.longitude,
+          });
+
+
+          
+          if (reverseGeocode.length > 0) {
+              const addr = reverseGeocode[0];
+              const locationString = [addr.city, addr.region]
+                  .filter(Boolean)
+                  .join(', ');
+              setDetectedLocation(locationString || 'Location detected');
+          } else {
+              setDetectedLocation('Location detected');
+          }
+      } catch (error) {
+          setDetectedLocation('None');
+      } finally {
+          setLoadingLocation(false);
+      }
+    }
 
   const [saving, setSaving] = useState(false);
 
@@ -589,13 +633,19 @@ const ProfileScreen = () => {
             </View>
 
             <View style={styles.section}>
-              <View style={styles.infoRow}>
-                <MaterialIcons name="location-on" size={20} color="#FB923C" />
+            <View style={styles.infoRow}>
+                <MaterialIcons name="location-on" size={20} color = "#FB923C" />
                 <Text style={styles.sectionTitle}>Location</Text>
-
-              </View>
-              <Text style={styles.infoValue}>{profile.location}</Text>
             </View>
+            {loadingLocation ? (
+                <View style={{flexDirection: 'row', alignItems: 'center', gap: 8}}>
+                    <ActivityIndicator size  ="small" color= "#FB923C" />
+                    <Text style= {styles.infoValue}>Detecting location</Text>
+                </View>
+            ) : (
+                <Text style={styles.infoValue}>{detectedLocation}</Text>
+            )}
+        </View>
 
             <View style={styles.section}>
               <View style={styles.infoRow}>
