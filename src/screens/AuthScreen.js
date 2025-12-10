@@ -21,7 +21,6 @@ const AuthScreen = () => {
     const [loading,setLoading] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
     const [formData, setFormData] = useState({
-        name: '',
         email: '',
         password: '',
         confirmPassword: ''
@@ -100,19 +99,6 @@ const AuthScreen = () => {
             {/*TODO: get ios and google login setup*/}
 
             <View style = {styles.inputContainer}>
-                {!isLogin && (
-                    <DoneTextInput
-                        style = {styles.input}
-                        placeholder = "Name"
-                        value={formData.name}
-                        onChangeText = {(value) => handleInputChange('name',value)}
-                        autoCapitalize= "words"
-                        editable = {!loading}
-                        maxLength = {30}
-                        placeholderTextColor="#6B7280"
-
-                    />
-                )}
                 <DoneTextInput
                     style={styles.input}
                     placeholder="Email Address"

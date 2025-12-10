@@ -4,9 +4,9 @@ const supabase = require('../config/database');
 const jwt = require('jsonwebtoken');
 router.post('/signup', async (req, res) => {
   try {
-    const { email, password, name } = req.body;
+    const { email, password} = req.body;
 
-    if (!email || !password || !name) {
+    if (!email || !password) {
       return res.status(400).json({ 
         success: false, 
         error: 'Email, password, and name are required' 
@@ -16,9 +16,6 @@ router.post('/signup', async (req, res) => {
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
-      options: {
-        data: { name }
-      }
     });
 
     if (error) throw error;
@@ -36,7 +33,6 @@ router.post('/signup', async (req, res) => {
           id: data.user.id,
           uid: data.user.id,
           email: data.user.email,
-          displayName: name
         },
         token
       }
