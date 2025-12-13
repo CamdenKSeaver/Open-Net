@@ -11,6 +11,8 @@ import EventDetailScreen from './src/screens/EventDetailScreen';
 import WaitlistManagementScreen from './src/screens/WaitlistManagementScreen';
 import { AuthProvider } from './src/context/AuthContext';
 import { useAuth } from './src/context/AuthContext';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { supabase } from './supabaseConfig';
 const Stack = createStackNavigator();
  
 
@@ -19,12 +21,13 @@ const AppNavigator = () => {
     const { user, loading: authLoading, refreshSession } = useAuth();
     const [hasProfile, setHasProfile] = useState(false);
     const [profileLoading, setProfileLoading] = useState(false);
-
+    const [checkingProfile, setCheckingProfile] = useState(false);
 
     useEffect(() => {
        
         const checkProfile = async () => {
             if (user && !authLoading) {
+                setCheckingProfile(true);
                 setProfileLoading(true);
                 try {
                     const userId = user.id || user.uid;
@@ -35,7 +38,12 @@ const AppNavigator = () => {
                     setHasProfile(false);
                 } finally {
                     setProfileLoading(false);
+                    setCheckingProfile(false);
                 }
+            }else if (!user && !authLoading) {
+                setHasProfile(false);
+                setProfileLoading(false);
+                setCheckingProfile(false);
             }
         };
 

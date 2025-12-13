@@ -13,12 +13,14 @@ import {
 import { MaterialIcons } from '@expo/vector-icons';
 import DoneTextInput from '../components/DoneTextInput';
 import { signInWithEmail, signUpWithEmail } from '../services/authService';
+import { useAuth } from '../context/AuthContext';
+
 const AuthScreen = () => {
+    const { refreshUser } = useAuth();
     const [isLogin,setIsLogin] = useState(true);
     const [loading,setLoading] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
     const [formData, setFormData] = useState({
-        name: '',
         email: '',
         password: '',
         confirmPassword: ''
@@ -32,29 +34,26 @@ const AuthScreen = () => {
     };
 
     const handleEmailAuth = async () => {
-       // alert('Got to auth');
         setLoading(true);
-        try{
+        try {
             let userResult;
-            if(isLogin){
+            if (isLogin) {
                 userResult = await signInWithEmail(formData.email, formData.password);
-            }
+            } 
             else {
-                userResult = await signUpWithEmail(formData.email, formData.password, formData.name);
+                userResult = await signUpWithEmail(formData.email, formData.password);
             }
-           // Alert.alert('signed in');
-        }
-        catch(error){
+            
+
+
+            await refreshUser();
+            
+        } catch (error) {
             Alert.alert('Authentication Error', error.message);
-        }
-        finally {
+        } finally {
             setLoading(false);
         }
-
     };
-
-
-
 
     return(
         <KeyboardAvoidingView
@@ -100,19 +99,6 @@ const AuthScreen = () => {
             {/*TODO: get ios and google login setup*/}
 
             <View style = {styles.inputContainer}>
-                {!isLogin && (
-                    <DoneTextInput
-                        style = {styles.input}
-                        placeholder = "Name"
-                        value={formData.name}
-                        onChangeText = {(value) => handleInputChange('name',value)}
-                        autoCapitalize= "words"
-                        editable = {!loading}
-                        maxLength = {30}
-                        placeholderTextColor="#6B7280"
-
-                    />
-                )}
                 <DoneTextInput
                     style={styles.input}
                     placeholder="Email Address"

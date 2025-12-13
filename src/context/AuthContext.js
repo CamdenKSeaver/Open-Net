@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { supabase } from '../../supabaseConfig';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const AuthContext = createContext();
 
@@ -10,22 +10,35 @@ export const AuthProvider = ({ children }) => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        supabase.auth.getSession().then(({ data: { session } }) => {
-            setUser(session?.user || null);
-            setLoading(false);
-        });
-
-        const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-            setUser(session?.user || null);
-            setLoading(false);
-        });
-
-        return () => subscription?.unsubscribe();
+        checkUser();
     }, []);
 
+    const checkUser = async () => {
+        try {
+            const userData = await AsyncStorage.getItem('userData');
+            const authToken = await AsyncStorage.getItem('authToken');
+            if (userData && authToken) {
+                setUser(JSON.parse(userData));
+            }
+            else {await AsyncStorage.removeItem('userData');
+                await AsyncStorage.removeItem('authToken');
+                setUser(null);}
+
+        } catch (error) {
+            console.error('Error loading user:', error); 
+            setUser(null);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const refreshUser = async () => {
+        await checkUser();
+    };
+
     return (
-        <AuthContext.Provider value={{user, loading}}>
-        {children}
+        <AuthContext.Provider value={{ user, loading, refreshUser }}>
+            {children}
         </AuthContext.Provider>
     );
 };

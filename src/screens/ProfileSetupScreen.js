@@ -16,6 +16,7 @@ import {
 import { useAuth } from '../context/AuthContext'
 import { MaterialIcons } from '@expo/vector-icons';
 import { createUserProfile } from '../services/profileService';
+import * as ImagePicker from 'expo-image-picker';
 
 const VOLLEYBALL_POSITIONS = [
     'Outside Hitter',
@@ -25,12 +26,18 @@ const VOLLEYBALL_POSITIONS = [
     'Libero',
     'Defensive Specialist'
 ];
-//TODO
-//Prolly get some icons, draw them in or art class or something
+
+
 const COURT_TYPES = [
-    { id: 'beach', label: 'Beach', icon: '' },
-    { id: 'indoor', label: 'Indoor', icon: '' },
-    { id: 'grass', label: 'Grass', icon: '' }
+    { id: 'beach', label: 'Beach', icon: 'beach-access', color: '#FFB800'},
+    { id: 'indoor', label: 'Indoor', icon: 'home', color: '#FB923C'},
+    { id: 'grass', label: 'Grass', icon: 'grass', color: '#10B981'}
+];
+
+const EXPERIENCE_LEVELS = [
+    {id: 'beginner', label: 'Beginner', description: 'Just starting out'},
+    {id: 'intermediate', label: 'Intermediate', description: 'Some experience'},
+    {id: 'advanced', label: 'Advanced', description: 'Highly skilled'}
 ];
 const ProfileSetupScreen = ({onProfileComplete}) => {
     const { user }  = useAuth();
@@ -48,7 +55,7 @@ const ProfileSetupScreen = ({onProfileComplete}) => {
     const [positionType, setPositionType] = useState(''); 
     const [favoriteCourtTypes, setFavoriteCourtTypes] = useState([]);
     const [location, setLocation] = useState('');
-
+    const [experienceLevel, setExperienceLevel] = useState('beginner'); 
 
 
     //aaron make this connect with the modal this should be good to go
@@ -97,8 +104,8 @@ const ProfileSetupScreen = ({onProfileComplete}) => {
             Alert.alert('Error', 'Please select at least one court type');
             return false;
         }
-        if (!location.trim()) {
-            Alert.alert('Error', 'Please enter your location');
+        if (!experienceLevel) {
+            Alert.alert('Error', 'Please select experience level');
             return false;
         }
         return true;
@@ -145,7 +152,7 @@ const ProfileSetupScreen = ({onProfileComplete}) => {
                 profileImage: profileImage || null,
                 primaryPosition,
                 secondaryPosition: secondaryPosition || null,
-                experienceLevel: 'beginner',
+                experienceLevel: experienceLevel,
                 location: location.trim(),
                 preferredCourts: favoriteCourtTypes,
                 isProfileComplete: true,
@@ -153,19 +160,7 @@ const ProfileSetupScreen = ({onProfileComplete}) => {
                 updatedAt: new Date()
             };
             const createdProfile = await createUserProfile(userProfile);
-            console.log('Created', createdProfile.id);
-            Alert.alert(
-                'Profile created',
-                'test',
-                [{
-                    text: 'start',
-                    onPress: () => {
-                        if (onProfileComplete) {
-                            onProfileComplete();   
-                        }
-                    }
-                }]
-            );
+           // console.log('Created', createdProfile.id);
                 
             if (onProfileComplete) {
               onProfileComplete();
@@ -179,7 +174,27 @@ const ProfileSetupScreen = ({onProfileComplete}) => {
 
 
 //TODO make the handleimagepicker to select image from camera roll, spot already made in db to save
-
+    const handleImagePicker = async () => {
+    try {
+        const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+        
+        if (status !== 'granted') {
+            Alert.alert('Permission needed');
+        return;
+        }
+        const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            allowsEditing: true,
+            aspect: [1, 1],
+            quality: 0.5,
+        });
+        if (!result.canceled) {
+        setProfileImage(result.assets[0].uri);
+        }
+    } catch (error) {
+        Alert.alert('Error', 'couldnt pick image');
+    }
+    };
 
     const renderStep1 = () => (
         <View style = {styles.stepContainer}>
@@ -240,7 +255,7 @@ const ProfileSetupScreen = ({onProfileComplete}) => {
             <Text style={styles.label}>Profile Picture</Text>
             <TouchableOpacity 
                 style= { styles.imageContainer} 
-                //onPress= { handleImagePicker} aaron try to make this function to
+                onPress= { handleImagePicker}
                 disabled ={loading}
             >
             {profileImage ? (<Image source= {{uri: profileImage}} style = {styles.profileImage}/>): (
@@ -308,36 +323,58 @@ const ProfileSetupScreen = ({onProfileComplete}) => {
             <Text style = {styles.helperText}>Select all that apply</Text>
             <View style = {styles.courtTypesContainer}>
             {COURT_TYPES.map((court) => (
-                <TouchableOpacity
-                key = {court.id}
-                style={[
-                    styles.courtTypeButton,
-                    favoriteCourtTypes.includes(court.id) && styles.courtTypeButtonSelected
-                ]}
-                onPress={() => handleCourtTypeToggle(court.id)}
-                disabled={loading}
-                >
-                <Text style ={styles.courtTypeIcon}> {court.icon}</Text>
-                <Text style = {[
-                    styles.courtTypeText,
-                    favoriteCourtTypes.includes(court.id) && styles.courtTypeTextSelected
-                ]}>
-                    { court.label}
-                </Text>
-                </TouchableOpacity>
-            ))}
+                    <TouchableOpacity
+                        key={court.id}
+                        style={[
+                            styles.courtTypeButton,
+                            favoriteCourtTypes.includes(court.id) && styles.courtTypeButtonSelected
+                        ]}
+                        onPress={() => handleCourtTypeToggle(court.id)}
+                        disabled={loading}>
+
+
+                        <MaterialIcons 
+                            name={court.icon} 
+                            size={32} 
+                            color={favoriteCourtTypes.includes(court.id) ? court.color: '#9CA3AF'} 
+                        />
+
+                        <Text style={[
+                            
+                            styles.courtTypeText,
+                            favoriteCourtTypes.includes(court.id) && {color: court.color}
+                        ]}>
+                            {court.label}
+                        </Text>
+                    </TouchableOpacity>
+                ))}
             </View>
             
-            <Text style= {styles.label}> Location</Text>
-            <DoneTextInput
-                style={styles.input}
-                value={location}
-                onChangeText={setLocation}
-                placeholder="location"
-                autoCapitalize="words"
-                editable={!loading}
-                maxLength={100}
-            />
+            <Text style= {styles.label}> Expirience Level</Text>
+            <Text style={styles.helperText}>How would you rate your skills?</Text>
+            <View style={styles.experienceLevelsContainer}>
+                    {EXPERIENCE_LEVELS.map((level) => (
+                        <TouchableOpacity
+                            key={level.id}
+                            style={[
+                                styles.experienceLevelButton,
+                                experienceLevel === level.id && styles.experienceLevelButtonSelected
+                            ]}
+                            onPress={() => setExperienceLevel(level.id)}
+                            disabled={loading}
+                        >
+                            <Text style={[
+                                styles.experienceLevelLabel,
+                                experienceLevel === level.id && styles.experienceLevelLabelSelected
+                            ]}>
+                                {level.label}
+                            </Text>
+                            <Text style={styles.experienceLevelDescription}>
+                                {level.description}
+                            </Text>
+                        </TouchableOpacity>
+                    ))}
+                </View>
         </View>
         </View>
     );
@@ -646,6 +683,39 @@ const styles = StyleSheet.create({
     },
     courtTypeTextSelected:{
         color: '#FB923C',
+    },
+
+    experienceLevelsContainer: {
+        gap: 12,
+    },
+
+
+
+    experienceLevelButton: {
+        padding: 16,
+        borderWidth: 2,
+        borderColor: '#E5E7EB',
+        borderRadius: 12,
+        backgroundColor: '#FFFFFF',
+    },
+
+    experienceLevelButtonSelected: {
+        borderColor: '#FB923C',
+        backgroundColor: '#FFF7ED',
+    },
+
+    experienceLevelLabel: {
+        fontSize: 16,
+        fontWeight: '600',
+        color: '#374151',
+        marginBottom: 4,
+    },
+    experienceLevelLabelSelected: {
+        color: '#FB923C',
+    },
+    experienceLevelDescription: {
+        fontSize: 14,
+        color: '#6B7280',
     },
 })
 
