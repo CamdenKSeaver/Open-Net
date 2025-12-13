@@ -58,7 +58,7 @@ The app is designed for both **recreational and competitive** volleyball players
 |--------|-------------|
 | **Frontend** | React Native with Expo |
 | **Backend / Database** | JavaScript, Cloud Firestore |
-| **Storage** | Firebase |
+| **Storage** | Supabase |
 | **Deployment** | Expo EAS Build (iOS & Android) |
 
 ---
