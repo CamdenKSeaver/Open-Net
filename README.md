@@ -74,3 +74,58 @@ The final deliverable will be a **fully functional mobile application** featurin
 
 ---
 
+
+
+---
+
+## How to Run the Project
+
+### Prerequisites
+- Node.js (v18+)
+- npm
+- Expo CLI: `npm install -g expo-cli`
+- Expo Go app on your phone
+
+### Setup
+
+1. **Clone the repository**
+```bash
+git clone https://github.com/CamdenKSeaver/Open-Net.git
+cd Open-Net
+```
+
+2. **Install dependencies**
+```bash
+npm install
+```
+
+3. **Create `.env` file** with your Supabase credentials:
+```
+EXPO_PUBLIC_SUPABASE_URL=your_supabase_url
+EXPO_PUBLIC_SUPABASE_KEY=your_supabase_anon_key
+I have this already in there for now which I know is normally really bad bud it should be fine for this
+```
+
+4. **Start the backend server**
+```bash
+cd backend, npm start
+```
+
+5. **Start the Expo app** (in a new terminal)
+```bash
+npx expo start
+```
+
+6. **Run on your device**
+- Scan the QR code with Expo Go app (Android) or Camera (iOS)
+- Or press `i` for iOS simulator / `a` for Android emulator
+
+### Run Tests
+```bash
+npm test                    # Run all tests
+```
+
+View coverage: `open coverage/lcov-report/index.html`
+
+---
+
