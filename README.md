@@ -125,7 +125,5 @@ npx expo start
 npm test                    # Run all tests
 ```
 
-View coverage: `open coverage/lcov-report/index.html`
-
 ---
 
