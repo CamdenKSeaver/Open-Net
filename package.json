@@ -14,13 +14,10 @@
     "testEnvironment": "node",
     "coveragePathIgnorePatterns": ["/node_modules/"],
     "testMatch": ["**/tests/**/*.test.js"],
-    "transformIgnorePatterns": [
-      "node_modules/(?!((jest-)?react-native|@react-native(-community)?)|expo(nent)?|@expo(nent)?/.*|@expo-google-fonts/.*|react-navigation|@react-navigation/.*|@unimodules/.*|unimodules|sentry-expo|native-base|react-native-svg)"
-    ],
     "setupFiles": ["./jest.setup.js"],
-    "moduleNameMapper": {
-      "^expo-constants$": "<rootDir>/node_modules/expo-constants"
-    }
+    "transformIgnorePatterns": [
+      "node_modules/(?!(jest-)?react-native|@react-native|expo|@expo|@unimodules)"
+    ]
   },
   "dependencies": {
     "@expo/metro-runtime": "~6.1.2",
