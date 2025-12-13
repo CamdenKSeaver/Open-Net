@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "OpenNet",
-    "slug": "open-net",
+    "slug": "opennet",
 
     "ios": {
       "bundleIdentifier": "com.camdenkseaver.opennet"
