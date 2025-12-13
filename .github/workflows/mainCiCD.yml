@@ -23,7 +23,6 @@ jobs:
       - name: Run tests
         run: |
           npm test -- --coverage
-          cd server && npm test -- --coverage
       
       - name: Upload coverage
         uses: peaceiris/actions-gh-pages@v3

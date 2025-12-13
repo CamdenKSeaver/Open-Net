@@ -33,7 +33,7 @@ describe('OpenNet App Tests', () =>{
             })
             })
         );
-        expect(AsyncStorage.setItem).toHaveBeenCalledWith('authToken', 'test-token-123');
+        expect(global.AsyncStorage.setItem).toHaveBeenCalledWith('authToken', 'test-token-123');
         });
 
         it('should handle profile image selection', async () => {
@@ -74,7 +74,7 @@ describe('OpenNet App Tests', () =>{
             };
 
             const result = await createUserProfile(profileData);
-            
+
             expect(result.profile_image_url).toBe('file://test-image.jpg');
             
         });
@@ -105,7 +105,7 @@ describe('OpenNet App Tests', () =>{
             })
             })
         );
-        expect(AsyncStorage.setItem).toHaveBeenCalledWith('authToken', 'signin-token-456');
+        expect(global.AsyncStorage.setItem).toHaveBeenCalledWith('authToken', 'signin-token-456');
         });
     });
 
@@ -113,7 +113,7 @@ describe('OpenNet App Tests', () =>{
         it('should create user profile with all required fields', async () =>{
         const {createUserProfile }= require('../src/services/profileService');
         
-        AsyncStorage.getItem.mockResolvedValue('test-token');
+        global.AsyncStorage.getItem.mockResolvedValue('test-token');
         
         global.fetch.mockResolvedValueOnce({
             json: async () =>({
@@ -153,7 +153,7 @@ describe('OpenNet App Tests', () =>{
 
         const {updateUserProfile }= require('../src/services/profileService');
         
-        AsyncStorage.getItem.mockResolvedValue('test-token');
+        global.AsyncStorage.getItem.mockResolvedValue('test-token');
         
         global.fetch.mockResolvedValueOnce({
             json: async () =>({
@@ -190,7 +190,7 @@ describe('OpenNet App Tests', () =>{
         it('should create volleyball event', async() =>{
         const {createEvent }= require('../src/services/eventService');
         
-        AsyncStorage.getItem.mockResolvedValue('test-token');
+        global.AsyncStorage.getItem.mockResolvedValue('test-token');
         
         global.fetch.mockResolvedValueOnce({
             json:async() =>({
@@ -295,7 +295,7 @@ describe('OpenNet App Tests', () =>{
         it('should join event waitlist', async () => {
         const {joinEventWaitlist }= require('../src/services/eventService');
         
-        AsyncStorage.getItem.mockResolvedValue('test-token');
+        global.AsyncStorage.getItem.mockResolvedValue('test-token');
         
         global.fetch.mockResolvedValueOnce({
             json: async () =>({
@@ -354,7 +354,7 @@ describe('OpenNet App Tests', () =>{
         it('should add user to waitlist when event is full', async () =>{
         const {joinEventWaitlist }= require('../src/services/eventService');
         
-        AsyncStorage.getItem.mockResolvedValue('test-token');
+        global.AsyncStorage.getItem.mockResolvedValue('test-token');
         
         global.fetch.mockResolvedValueOnce({
             json: async () =>({
@@ -380,7 +380,7 @@ describe('OpenNet App Tests', () =>{
         it('should approve player from waitlist', async() =>{
         const {approvePlayer }= require('../src/services/eventService');
         
-        AsyncStorage.getItem.mockResolvedValue('test-token');
+        global.AsyncStorage.getItem.mockResolvedValue('test-token');
         
         global.fetch.mockResolvedValueOnce({
             json: async() =>({
@@ -416,7 +416,7 @@ describe('OpenNet App Tests', () =>{
         it('should remove user from event', async () =>{
         const {leaveEvent }= require('../src/services/eventService');
         
-        AsyncStorage.getItem.mockResolvedValue('test-token');
+        global.AsyncStorage.getItem.mockResolvedValue('test-token');
         global.fetch.mockResolvedValueOnce({
             json: async () =>({
                 success: true
