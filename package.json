@@ -10,13 +10,21 @@
     "test": "jest --coverage"
   },
   "jest": {
-    "preset": "jest-expo",
     "testEnvironment": "node",
-    "coveragePathIgnorePatterns": ["/node_modules/"],
-    "testMatch": ["**/tests/**/*.test.js"],
-    "setupFiles": ["./jest.setup.js"],
+    "coveragePathIgnorePatterns": [
+      "/node_modules/"
+    ],
+    "testMatch": [
+      "**/tests/**/*.test.js"
+    ],
+    "setupFiles": [
+      "./jest.setup.js"
+    ],
+    "transform": {
+      "^.+\\.(js|jsx)$": "babel-jest"
+    },
     "transformIgnorePatterns": [
-      "node_modules/(?!(jest-)?react-native|@react-native|expo|@expo|@unimodules)"
+      "node_modules/(?!(react-native|@react-native|expo|@expo)/)"
     ]
   },
   "dependencies": {
@@ -47,6 +55,8 @@
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
+    "@babel/preset-env": "^7.28.5",
+    "babel-jest": "^30.2.0",
     "jest": "^30.2.0",
     "jest-expo": "^54.0.16",
     "supertest": "^7.1.4"
