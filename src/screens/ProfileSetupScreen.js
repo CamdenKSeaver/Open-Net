@@ -16,6 +16,7 @@ import {
 import { useAuth } from '../context/AuthContext'
 import { MaterialIcons } from '@expo/vector-icons';
 import { createUserProfile } from '../services/profileService';
+import * as ImagePicker from 'expo-image-picker';
 
 const VOLLEYBALL_POSITIONS = [
     'Outside Hitter',
@@ -159,19 +160,7 @@ const ProfileSetupScreen = ({onProfileComplete}) => {
                 updatedAt: new Date()
             };
             const createdProfile = await createUserProfile(userProfile);
-            console.log('Created', createdProfile.id);
-            Alert.alert(
-                'Profile created',
-                'test',
-                [{
-                    text: 'start',
-                    onPress: () => {
-                        if (onProfileComplete) {
-                            onProfileComplete();   
-                        }
-                    }
-                }]
-            );
+           // console.log('Created', createdProfile.id);
                 
             if (onProfileComplete) {
               onProfileComplete();
