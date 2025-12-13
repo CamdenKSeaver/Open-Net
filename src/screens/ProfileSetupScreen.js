@@ -185,7 +185,27 @@ const ProfileSetupScreen = ({onProfileComplete}) => {
 
 
 //TODO make the handleimagepicker to select image from camera roll, spot already made in db to save
-
+    const handleImagePicker = async () => {
+    try {
+        const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+        
+        if (status !== 'granted') {
+            Alert.alert('Permission needed');
+        return;
+        }
+        const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            allowsEditing: true,
+            aspect: [1, 1],
+            quality: 0.5,
+        });
+        if (!result.canceled) {
+        setProfileImage(result.assets[0].uri);
+        }
+    } catch (error) {
+        Alert.alert('Error', 'couldnt pick image');
+    }
+    };
 
     const renderStep1 = () => (
         <View style = {styles.stepContainer}>
@@ -246,7 +266,7 @@ const ProfileSetupScreen = ({onProfileComplete}) => {
             <Text style={styles.label}>Profile Picture</Text>
             <TouchableOpacity 
                 style= { styles.imageContainer} 
-                //onPress= { handleImagePicker} aaron try to make this function to
+                onPress= { handleImagePicker}
                 disabled ={loading}
             >
             {profileImage ? (<Image source= {{uri: profileImage}} style = {styles.profileImage}/>): (
