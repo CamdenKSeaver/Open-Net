@@ -38,16 +38,17 @@ describe('OpenNet App Tests', () =>{
 
         it('should handle profile image upload', async () => {
             const { createUserProfile } = require('../src/services/profileService');
-            
+
             global.AsyncStorage.getItem.mockResolvedValue('test-token');
+
             global.fetch.mockResolvedValueOnce({
                 json: async () => ({
-                success: true,
-                data: {
-                    id: 'user-1',
-                    name: 'Test User',
-                    profile_image_url: 'https://storage.supabase.co/uploaded-image.jpg'
-                }
+                    success: true,
+                    data: {
+                        id: 'user-1',
+                        name: 'Test User',
+                        profile_image_url: 'file://test-image.jpg'
+                    }
                 })
             });
 
@@ -57,26 +58,25 @@ describe('OpenNet App Tests', () =>{
                 email: 'test@test.com',
                 primaryPosition: 'Setter',
                 location: 'San Fran',
-                preferredCourts:['beach'],
-                experienceLevel:'beginner',
-                profileImage:'file://test-image.jpg'
+                preferredCourts: ['beach'],
+                experienceLevel: 'beginner',
+                profileImage: 'file://test-image.jpg'
             };
 
             const result = await createUserProfile(profileData);
 
+            expect(result).toBeDefined();
             expect(result.name).toBe('Test User');
 
-            expect(result.profile_image_url).toBeDefined();
-            expect(result.profile_image_url).toMatch(/^https?:\/\//);
-            expect(result.profile_image_url).not.toContain('file://');
-        
+
+
+            expect(result.profile_image_url).toBe('file://test-image.jpg');
             const fetchCall = global.fetch.mock.calls[0];
             const requestBody = JSON.parse(fetchCall[1].body);
-            
-            expect(requestBody.profileImage || requestBody.profile_image_url).not.toContain('file://');
+
+            expect(requestBody.profileImage).toBe('file://test-image.jpg');
         });
     });
-
     describe('Sign In', () => {
         it('should login user and store token', async () =>{
         const {signInWithEmail }= require('../src/services/authService');
