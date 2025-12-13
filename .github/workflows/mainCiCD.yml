@@ -55,4 +55,4 @@ jobs:
       - name: Build with EAS
         run: |
           npm install -g eas-cli
-          eas build --platform all --non-interactive --no-wait
+          eas build --platform ios --non-interactive --no-wait
