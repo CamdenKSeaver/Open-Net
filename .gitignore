@@ -17,3 +17,10 @@ yarn-error.*
 .env*.local
 *.tsbuildinfo
 node_modules/
+coverage/
+*.coverage
+.nyc_output/
+jest-coverage/
+.expo/
+.expo-shared/
+eas-build/
