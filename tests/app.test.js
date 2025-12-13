@@ -36,47 +36,44 @@ describe('OpenNet App Tests', () =>{
         expect(global.AsyncStorage.setItem).toHaveBeenCalledWith('authToken', 'test-token-123');
         });
 
-        it('should handle profile image selection', async () => {
-
-            const mockImagePicker = {
-                launchImageLibraryAsync: jest.fn(() =>Promise.resolve({
-                cancelled: false,
-                uri: 'file://test-image.jpg'
-                }))
-            };
-            
-            jest.mock('expo-image-picker', () =>mockImagePicker);
-            
-            const {createUserProfile }= require('../src/services/profileService');
+        it('should handle profile image upload', async () => {
+            const { createUserProfile } = require('../src/services/profileService');
             
             global.AsyncStorage.getItem.mockResolvedValue('test-token');
-            
             global.fetch.mockResolvedValueOnce({
-                json:async() => ({
-                success:true,
-                data:{
-                    id:'user-1',
-                    name:'Test User',
-                    profile_image_url:'https://example.com/image.jpg'
+                json: async () => ({
+                success: true,
+                data: {
+                    id: 'user-1',
+                    name: 'Test User',
+                    profile_image_url: 'https://storage.supabase.co/uploaded-image.jpg'
                 }
                 })
             });
 
             const profileData = {
-                uid:'user-1',
+                uid: 'user-1',
                 name: 'Test User',
                 email: 'test@test.com',
                 primaryPosition: 'Setter',
-                location:'San Francisco',
+                location: 'San Fran',
                 preferredCourts:['beach'],
                 experienceLevel:'beginner',
-                profileImage: 'file://test-image.jpg'
+                profileImage:'file://test-image.jpg'
             };
 
             const result = await createUserProfile(profileData);
 
-            expect(result.profile_image_url).toBe('file://test-image.jpg');
+            expect(result.name).toBe('Test User');
+
+            expect(result.profile_image_url).toBeDefined();
+            expect(result.profile_image_url).toMatch(/^https?:\/\//);
+            expect(result.profile_image_url).not.toContain('file://');
+        
+            const fetchCall = global.fetch.mock.calls[0];
+            const requestBody = JSON.parse(fetchCall[1].body);
             
+            expect(requestBody.profileImage || requestBody.profile_image_url).not.toContain('file://');
         });
     });
 
